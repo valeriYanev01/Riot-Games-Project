@@ -1,0 +1,47 @@
+@font-face {
+  font-family: LoL Font;
+  src: url("../fonts/BEAUFORTFORLOL-REGULAR.TTF");
+}
+
+* {
+  font-family: LoL Font;
+  font-weight: 700;
+}
+
+.matches-container {
+  display: flex;
+  width: 95vw;
+  flex-direction: column;
+}
+
+.match-number {
+  font-size: 22px;
+  cursor: pointer;
+  display: inline-block;
+  margin: 10px 0 0 20px;
+}
+
+.red-team,
+.blue-team {
+  color: #f4fdff;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.blue-team span,
+.red-team span {
+  font-weight: 500;
+}
+
+.red-team {
+  background: rgba(139, 0, 0, 0.85);
+}
+
+.blue-team {
+  background: rgba(0, 0, 139, 0.85);
+}
+
+.team-container {
+  width: 220px;
+}
