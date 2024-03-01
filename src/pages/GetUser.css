@@ -6,12 +6,7 @@
 * {
   font-family: LoL Font;
   font-weight: 700;
-}
-
-.matches-container {
-  display: flex;
-  width: 95vw;
-  flex-direction: column;
+  margin: 0;
 }
 
 .match-number {
@@ -26,7 +21,7 @@
   color: #f4fdff;
   display: flex;
   justify-content: space-between;
-  padding: 20px;
+  padding: 20px 10px;
 }
 
 .blue-team span,
@@ -43,5 +38,48 @@
 }
 
 .team-container {
-  width: 220px;
+  position: relative;
+}
+
+.summoner-name {
+  padding-bottom: 5px;
+  display: block;
+}
+
+.kda-container {
+  display: inline-flex;
+  position: absolute;
+}
+
+.kda-icon {
+  margin: 0 5px;
+  width: 16px;
+  height: 16px;
+  align-self: center;
+}
+
+.summoner-items {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.items-span {
+  align-self: center;
+  margin-left: 5px;
+}
+
+.empty-item {
+  display: inline-block;
+  background-color: #000;
+}
+
+.single-item-container {
+  margin-left: 5px;
+}
+
+.single-item,
+.empty-item {
+  width: 26px;
+  height: 26px;
+  margin: 0 1px;
 }

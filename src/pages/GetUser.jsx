@@ -1,9 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import "./GetUser.css";
+import Loading from "../components/Loading";
+import Teams from "../components/Teams";
 
 const Homepage = () => {
   const [error, setError] = useState("");
+  const [loadingUser, setLoadingUser] = useState(false);
+  const [loadingMatchHistory, setLoadingMatchHistory] = useState(false);
   const [user, setUser] = useState({});
   const [region, setRegion] = useState("");
   const [summonerName, setSummonerName] = useState("");
@@ -50,6 +54,7 @@ const Homepage = () => {
   }, [region]);
 
   const getMatchHistory = (puuid, region) => {
+    setLoadingMatchHistory(true);
     axios
       .get(
         `https://${region}.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?start=0&count=10&api_key=${API_KEY}`
@@ -65,11 +70,16 @@ const Homepage = () => {
       })
       .then((response) => {
         setMatches(response);
+        setLoadingMatchHistory(false);
       })
       .catch((err) => console.log(err));
   };
 
   const getUser = () => {
+    setLoadingUser(true);
+    setMatches([]);
+    setUser({});
+
     if (!region) {
       setError("Please select a region");
       throw new Error("Please select a region");
@@ -94,6 +104,7 @@ const Homepage = () => {
       .then((response) => {
         getMatchHistory(response, continent);
       })
+      .then(() => setLoadingUser(false))
       .catch(() => {
         setError("There is no summoner with that name!");
         setSummonerName("");
@@ -155,6 +166,8 @@ const Homepage = () => {
         <button onClick={getUser}>Get user</button>
 
         {error && <p>{error}</p>}
+
+        {loadingUser && <Loading toLoad={"user"} />}
         {user.name ? (
           <div>
             <p>Summoner: {name}</p>
@@ -171,7 +184,7 @@ const Homepage = () => {
       </div>
 
       <div>
-        <h2>Match History:</h2>
+        {loadingMatchHistory && <Loading toLoad={"match history"} />}
         {matches.length > 0 &&
           matches.map((match, i) => (
             <div key={i}>
@@ -184,25 +197,13 @@ const Homepage = () => {
               {matchIndex === i && (
                 <div>
                   <div className="matches-container">
+                    <p>Winner: {match.teams[0].win ? "Blue Team" : "Red Team"}</p>
                     <div className="blue-team">
                       {match.participants
                         .filter((_, idx) => idx <= 4)
                         .map((p) => (
                           <div key={p.summonerName} className="team-container">
-                            <div>
-                              <span>Summoner: {p.summonerName}</span>
-                            </div>
-                            <img
-                              src={`https://ddragon.leagueoflegends.com/cdn/14.4.1/img/profileicon/${p.profileIcon}.png`}
-                              width="48px"
-                            />
-                            <div>
-                              <span>Champion: </span>
-                              <img
-                                src={`https://ddragon.leagueoflegends.com/cdn/14.4.1/img/champion/${p.championName}.png`}
-                                width="48px"
-                              />
-                            </div>
+                            <Teams p={p} />
                           </div>
                         ))}
                     </div>
@@ -211,34 +212,21 @@ const Homepage = () => {
                         .filter((_, idx) => idx > 4)
                         .map((p) => (
                           <div key={p.summonerName} className="team-container">
-                            <div>
-                              <span>Summoner: {p.summonerName}</span>
-                            </div>
-                            <img
-                              src={`https://ddragon.leagueoflegends.com/cdn/14.4.1/img/profileicon/${p.profileIcon}.png`}
-                              width="48px"
-                            />
-                            <div>
-                              <span>Champion: </span>
-                              <img
-                                src={`https://ddragon.leagueoflegends.com/cdn/14.4.1/img/champion/${p.championName}.png`}
-                                width="48px"
-                              />
-                            </div>
+                            <Teams p={p} />
                           </div>
                         ))}
                     </div>
                   </div>
                   <p>Date: {new Date(match.gameCreation).toISOString()}</p>
-                  <p>Duration: {(match.gameDuration / 60).toFixed(2)}</p>
-                  <p>Mode: {match.gameMode}</p>
+                  <p>Duration: {(match.gameDuration / 60).toFixed(2)} m</p>
+                  <p>
+                    Mode:{" "}
+                    {match.gameMode === "CLASSIC"
+                      ? match.gameMode[0] + match.gameMode.slice(1).toLowerCase()
+                      : match.gameMode}
+                  </p>
                   <div>
-                    <span>Map:</span>
-                    <img
-                      src={`https://ddragon.leagueoflegends.com/cdn/6.8.1/img/map/map${match.mapId}.png`}
-                      width="64px"
-                    />
-                    <span>{mapName}</span>
+                    <span>Map: {mapName}</span>
                   </div>
                 </div>
               )}
