@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import "./GetUser.css";
+import "./Homepage.css";
 import Loading from "../components/Loading";
 import Teams from "../components/Teams";
 
@@ -125,10 +125,8 @@ const Homepage = () => {
           }
         });
       })
-      .then((err) => console.log(err));
+      .catch((err) => console.log(err));
   };
-
-  console.log(matches);
 
   return (
     <>

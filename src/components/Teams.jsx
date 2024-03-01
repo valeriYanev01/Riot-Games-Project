@@ -1,4 +1,5 @@
 import SingleItem from "./SingleItem";
+import "./Teams.css";
 
 const Teams = ({ p }) => {
   return (
@@ -6,7 +7,10 @@ const Teams = ({ p }) => {
       <div>
         <span className="summoner-name">{p.summonerName}</span>
       </div>
-      <img src={`https://ddragon.leagueoflegends.com/cdn/14.4.1/img/champion/${p.championName}.png`} width="48px" />
+      <img
+        src={`https://ddragon.leagueoflegends.com/cdn/14.4.1/img/champion/${p.championName}.png`}
+        className="champion-icon"
+      />
       <span className="kda-container">
         <img src="/img/score.png" className="kda-icon" />
         <span>

@@ -1,0 +1,22 @@
+@font-face {
+  font-family: LoL Font;
+  src: url("../fonts/BEAUFORTFORLOL-REGULAR.TTF");
+}
+
+* {
+  font-family: LoL Font;
+  font-weight: 700;
+  margin: 0;
+}
+
+.matches-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.match-number {
+  font-size: 22px;
+  cursor: pointer;
+  display: inline-block;
+  margin: 10px 0 0 20px;
+}

@@ -1,27 +1,25 @@
-@font-face {
-  font-family: LoL Font;
-  src: url("../fonts/BEAUFORTFORLOL-REGULAR.TTF");
+.summoner-name {
+  padding-bottom: 5px;
+  display: block;
 }
 
-* {
-  font-family: LoL Font;
-  font-weight: 700;
-  margin: 0;
+.champion-icon {
+  width: 64px;
 }
 
-.match-number {
-  font-size: 22px;
-  cursor: pointer;
-  display: inline-block;
-  margin: 10px 0 0 20px;
+.items-span {
+  align-self: center;
+  margin-left: 5px;
 }
 
 .red-team,
 .blue-team {
-  color: #f4fdff;
   display: flex;
+  color: #f0e6d2;
+  flex-direction: column;
   justify-content: space-between;
   padding: 20px 10px;
+  gap: 30px;
 }
 
 .blue-team span,
@@ -30,20 +28,16 @@
 }
 
 .red-team {
-  background: rgba(139, 0, 0, 0.85);
+  background: #280914;
 }
 
 .blue-team {
-  background: rgba(0, 0, 139, 0.85);
+  background: #091428;
+  margin-bottom: 20px;
 }
 
 .team-container {
   position: relative;
-}
-
-.summoner-name {
-  padding-bottom: 5px;
-  display: block;
 }
 
 .kda-container {
@@ -63,14 +57,8 @@
   align-items: baseline;
 }
 
-.items-span {
-  align-self: center;
-  margin-left: 5px;
-}
-
 .empty-item {
   display: inline-block;
-  background-color: #000;
 }
 
 .single-item-container {
@@ -79,7 +67,10 @@
 
 .single-item,
 .empty-item {
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   margin: 0 1px;
+  padding: 2px;
+  background: #fff;
+  border-radius: 4px;
 }
