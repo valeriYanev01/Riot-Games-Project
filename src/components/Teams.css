@@ -1,3 +1,9 @@
+.match-overview,
+.match-stats {
+  padding: 0 10px;
+  border-right: 1px solid #f0e6d2;
+}
+
 .summoner-name {
   padding-bottom: 5px;
   display: block;
@@ -12,7 +18,7 @@
 }
 
 .champion-icon {
-  width: 64px;
+  width: 80px;
 }
 
 .summoner-spells {
@@ -31,18 +37,30 @@
 .kda-container {
   display: inline-flex;
   position: absolute;
+  gap: 15px;
+  margin-left: 10px;
 }
 
-.kda-icon {
+.kda-hover,
+.cs-hover {
+}
+
+.kda-container span {
+  display: flex;
+}
+
+.kda-icon,
+.minions-icon {
   margin: 0 5px;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   align-self: center;
 }
 
 .summoner-items {
   display: inline-flex;
   align-items: baseline;
+  margin: 0 10px;
 }
 
 .items-span {
@@ -60,7 +78,25 @@
   width: 32px;
   height: 32px;
   margin: 0 2px;
-  padding: 1px;
-  background: #f0e6d2;
   border-radius: 4px;
+  border: 1px solid #f0e6d2;
+}
+
+.damage-dealt {
+  display: flex;
+  flex-direction: column;
+}
+
+.match-stats {
+  min-width: 200px;
+}
+
+.match-stats span {
+  display: inline-block;
+  margin-left: 15px;
+}
+
+.match-stats span p,
+.match-stats span div p {
+  font-weight: 100;
 }

@@ -47,4 +47,7 @@
 
 .team-container {
   position: relative;
+  border-bottom: 1px solid #f0e6d2;
+  padding-bottom: 15px;
+  display: flex;
 }

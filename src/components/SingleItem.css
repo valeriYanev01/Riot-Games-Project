@@ -1,0 +1,33 @@
+.item-float-container {
+  background: #000;
+  border: 1px solid #f0e6d2;
+  z-index: 999;
+  max-height: fit-content;
+  position: absolute;
+  top: 10px;
+  max-width: 300px;
+  padding: 10px;
+}
+
+.item-name {
+  font-size: 18px;
+}
+
+.item-information {
+  margin: 10px 0 0 5px;
+}
+
+mainText,
+statsm,
+mainText li,
+stats {
+  font-weight: 100;
+}
+
+passive {
+  color: #268c4c;
+}
+
+active {
+  color: #e30b5c;
+}

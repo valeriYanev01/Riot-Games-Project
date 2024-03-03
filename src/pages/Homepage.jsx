@@ -5,19 +5,19 @@ import Loading from "../components/Loading";
 import Teams from "../components/Teams";
 
 const Homepage = () => {
-  const [error, setError] = useState("");
-  const [loadingUser, setLoadingUser] = useState(false);
-  const [loadingMatchHistory, setLoadingMatchHistory] = useState(false);
-  const [user, setUser] = useState({});
-  const [region, setRegion] = useState("");
-  const [summonerName, setSummonerName] = useState("");
-  const [profileIcon, setProfileIcon] = useState("");
-  const [name, setName] = useState("");
-  const [level, setLevel] = useState(null);
   const [continent, setContinent] = useState("");
+  const [error, setError] = useState("");
+  const [level, setLevel] = useState(null);
+  const [loadingMatchHistory, setLoadingMatchHistory] = useState(false);
+  const [loadingUser, setLoadingUser] = useState(false);
+  const [mapName, setMapName] = useState("");
   const [matches, setMatches] = useState([]);
   const [matchIndex, setMatchIndex] = useState(null);
-  const [mapName, setMapName] = useState("");
+  const [name, setName] = useState("");
+  const [userData, setUserData] = useState({});
+  const [profileIcon, setProfileIcon] = useState("");
+  const [region, setRegion] = useState("");
+  const [summonerName, setSummonerName] = useState("");
 
   const API_KEY = "RGAPI-e0aa0d51-b0ce-4370-8906-d062beedeb82";
 
@@ -78,7 +78,7 @@ const Homepage = () => {
   const getUser = () => {
     setLoadingUser(true);
     setMatches([]);
-    setUser({});
+    setUserData({});
 
     if (!region) {
       setError("Please select a region");
@@ -93,7 +93,7 @@ const Homepage = () => {
     axios
       .get(`https://${region}.api.riotgames.com/lol/summoner/v4/summoners/by-name/${summonerName}?api_key=${API_KEY}`)
       .then((response) => {
-        setUser(response.data);
+        setUserData(response.data);
         setName(response.data.name);
         setProfileIcon(response.data.profileIconId);
         setLevel(response.data.summonerLevel);
@@ -110,7 +110,7 @@ const Homepage = () => {
       .catch(() => {
         setError("There is no summoner with that name!");
         setSummonerName("");
-        setUser("");
+        setUserData({});
         throw new Error("There is no summoner with that name!");
       });
   };
@@ -129,6 +129,8 @@ const Homepage = () => {
       })
       .catch((err) => console.log(err));
   };
+
+  console.log(matches);
 
   return (
     <>
@@ -168,7 +170,7 @@ const Homepage = () => {
         {error && <p>{error}</p>}
 
         {loadingUser && <Loading toLoad={"user"} />}
-        {user.name ? (
+        {userData.name ? (
           <div>
             <p>Summoner: {name}</p>
             <img
