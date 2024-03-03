@@ -97,8 +97,10 @@ const Homepage = () => {
         setName(response.data.name);
         setProfileIcon(response.data.profileIconId);
         setLevel(response.data.summonerLevel);
+
         setError("");
         setSummonerName("");
+
         return response.data.puuid;
       })
       .then((response) => {
@@ -201,7 +203,7 @@ const Homepage = () => {
                         .filter((_, idx) => idx <= 4)
                         .map((p) => (
                           <div key={p.summonerName} className="team-container">
-                            <Teams p={p} />
+                            <Teams summoner={p} />
                           </div>
                         ))}
                     </div>
@@ -210,7 +212,7 @@ const Homepage = () => {
                         .filter((_, idx) => idx > 4)
                         .map((p) => (
                           <div key={p.summonerName} className="team-container">
-                            <Teams p={p} />
+                            <Teams summoner={p} />
                           </div>
                         ))}
                     </div>

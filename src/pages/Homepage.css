@@ -20,3 +20,31 @@
   display: inline-block;
   margin: 10px 0 0 20px;
 }
+
+.red-team,
+.blue-team {
+  display: flex;
+  color: #f0e6d2;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px 10px;
+  gap: 30px;
+}
+
+.blue-team span,
+.red-team span {
+  font-weight: 500;
+}
+
+.red-team {
+  background: #280914;
+}
+
+.blue-team {
+  background: #091428;
+  margin-bottom: 20px;
+}
+
+.team-container {
+  position: relative;
+}

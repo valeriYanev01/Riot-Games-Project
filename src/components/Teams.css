@@ -1,43 +1,31 @@
 .summoner-name {
   padding-bottom: 5px;
   display: block;
+  width: fit-content;
+}
+
+.champion-img-spells {
+  display: inline-flex;
+  width: fit-content;
+  height: fit-content;
+  flex-direction: column;
 }
 
 .champion-icon {
   width: 64px;
 }
 
-.items-span {
-  align-self: center;
-  margin-left: 5px;
+.summoner-spells {
+  margin-top: 5px;
 }
 
-.red-team,
-.blue-team {
-  display: flex;
-  color: #f0e6d2;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 20px 10px;
-  gap: 30px;
+.summoner-spells img {
+  width: 32px;
+  height: 32px;
 }
 
-.blue-team span,
-.red-team span {
-  font-weight: 500;
-}
-
-.red-team {
-  background: #280914;
-}
-
-.blue-team {
-  background: #091428;
-  margin-bottom: 20px;
-}
-
-.team-container {
-  position: relative;
+.summoner-spells :first-child {
+  margin-right: 5px;
 }
 
 .kda-container {
@@ -57,8 +45,9 @@
   align-items: baseline;
 }
 
-.empty-item {
-  display: inline-block;
+.items-span {
+  align-self: center;
+  margin-left: 5px;
 }
 
 .single-item-container {
@@ -66,11 +55,12 @@
 }
 
 .single-item,
-.empty-item {
+.spell1,
+.spell2 {
   width: 32px;
   height: 32px;
-  margin: 0 1px;
-  padding: 2px;
-  background: #fff;
+  margin: 0 2px;
+  padding: 1px;
+  background: #f0e6d2;
   border-radius: 4px;
 }
