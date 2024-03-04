@@ -130,8 +130,6 @@ const Homepage = () => {
       .catch((err) => console.log(err));
   };
 
-  console.log(matches);
-
   return (
     <>
       <div>
@@ -205,7 +203,7 @@ const Homepage = () => {
                         .filter((_, idx) => idx <= 4)
                         .map((p) => (
                           <div key={p.summonerName} className="team-container">
-                            <Teams summoner={p} />
+                            <Teams summoner={p} region={region} />
                           </div>
                         ))}
                     </div>
@@ -214,7 +212,7 @@ const Homepage = () => {
                         .filter((_, idx) => idx > 4)
                         .map((p) => (
                           <div key={p.summonerName} className="team-container">
-                            <Teams summoner={p} />
+                            <Teams summoner={p} region={region} />
                           </div>
                         ))}
                     </div>

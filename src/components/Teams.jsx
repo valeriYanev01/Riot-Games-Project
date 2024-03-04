@@ -1,11 +1,71 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { summonerRole } from "../functions/getSummonerRole.js";
 import { summonerSpellName } from "../functions/getSummonerSpellName.js";
 import SingleItem from "./SingleItem";
 import "./Teams.css";
+import axios from "axios";
+import MostPlayedChamp from "./MostPlayedChamp.jsx";
 
-const Teams = ({ summoner }) => {
-  const [hoverText, setHoverText] = useState("");
+const Teams = ({ summoner, region }) => {
+  const [hoverTextKDA, setHoverTextKDA] = useState("");
+  const [hoverTextCS, setHoverTextCS] = useState("");
+  const [championInfo_1, setChampionInfo_1] = useState({});
+  const [championInfo_2, setChampionInfo_2] = useState({});
+  const [championInfo_3, setChampionInfo_3] = useState({});
+  const [championImage_1, setChampionImage_1] = useState("");
+  const [championImage_2, setChampionImage_2] = useState("");
+  const [championImage_3, setChampionImage_3] = useState("");
+
+  const API_KEY = "RGAPI-e0aa0d51-b0ce-4370-8906-d062beedeb82";
+
+  useEffect(() => {
+    const getActualSummonerData = () => {
+      axios
+        .get(
+          `https://${region}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/${summoner.puuid}/top?count=3&api_key=${API_KEY}`
+        )
+        .then((response) => {
+          setChampionInfo_1(response.data[0]);
+          setChampionInfo_2(response.data[1]);
+          setChampionInfo_3(response.data[2]);
+        });
+    };
+
+    getActualSummonerData();
+  }, [region, summoner.puuid]);
+
+  useEffect(() => {
+    let replaceString = "";
+
+    const getAllChampions = () => {
+      axios
+        .get(`https://ddragon.leagueoflegends.com/cdn/14.4.1/data/en_US/champion.json`)
+        .then((response) => {
+          return Object.values(response.data.data);
+        })
+        .then((response) => {
+          response.forEach((champion) => {
+            if (champion.key == championInfo_1.championId) {
+              replaceString = champion.name.replace("'G", "g");
+              replaceString = replaceString.replace(/[\s'"]/g, "");
+              setChampionImage_1(replaceString);
+            }
+            if (champion.key == championInfo_2.championId) {
+              replaceString = champion.name.replace("'G", "g");
+              replaceString = replaceString.replace(/[\s'"]/g, "");
+              setChampionImage_2(replaceString);
+            }
+            if (champion.key == championInfo_3.championId) {
+              replaceString = champion.name.replace("'G", "g");
+              replaceString = replaceString.replace(/[\s'"]/g, "");
+              setChampionImage_3(replaceString);
+            }
+          });
+        });
+    };
+
+    getAllChampions();
+  }, [championInfo_1.championId, championInfo_2.championId, championInfo_3.championId]);
 
   return (
     <>
@@ -37,20 +97,30 @@ const Teams = ({ summoner }) => {
         <span className="kda-container">
           <span
             className="kda-hover"
-            onMouseEnter={() => setHoverText("Kill/Deaths/Assists")}
-            onMouseLeave={() => setHoverText("")}
+            onMouseEnter={() => setHoverTextKDA("Kills/Deaths/Assists")}
+            onMouseLeave={() => setHoverTextKDA("")}
           >
             <img src="/img/score.png" className="kda-icon" />
             <span>
               {summoner.kills} / {summoner.deaths} / {summoner.assists}
+              {hoverTextKDA && <div className="kda-hover-text">{hoverTextKDA}</div>}
             </span>
           </span>
-          <span className="cs-hover">
+          <span
+            className="cs-hover"
+            onMouseEnter={() => setHoverTextCS("Minions Killed")}
+            onMouseLeave={() => setHoverTextCS("")}
+          >
             <img src="/img/cs.png" className="minions-icon" />
-            <span>{summoner.totalMinionsKilled}</span>
+            <span>
+              {summoner.totalAllyJungleMinionsKilled +
+                summoner.totalEnemyJungleMinionsKilled +
+                summoner.totalMinionsKilled +
+                summoner.neutralMinionsKilled}
+            </span>
+            {hoverTextCS && <div className="kda-hover-text">{hoverTextCS}</div>}
           </span>
         </span>
-        {hoverText && <div>{hoverText}</div>}
         <span className="summoner-items">
           <span className="items-span">
             <img src="/img/items.png" />
@@ -79,7 +149,23 @@ const Teams = ({ summoner }) => {
         </span>
       </div>
 
-      <div className="summoner-stats"></div>
+      <div className="summoner-stats">
+        <div className="icon_name">
+          <img
+            src={`https://ddragon.leagueoflegends.com/cdn/14.4.1/img/profileicon/${summoner.profileIcon}.png`}
+            width="96xp"
+          />
+          <p>
+            {summoner.summonerName} - {summoner.summonerLevel} Level
+          </p>
+        </div>
+
+        <div className="most-played-champs">
+          <MostPlayedChamp championInfo={championInfo_1} championImage={championImage_1} />
+          <MostPlayedChamp championInfo={championInfo_2} championImage={championImage_2} />
+          <MostPlayedChamp championInfo={championInfo_3} championImage={championImage_3} />
+        </div>
+      </div>
     </>
   );
 };
