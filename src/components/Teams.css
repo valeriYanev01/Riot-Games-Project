@@ -23,6 +23,7 @@
 
 .summoner-spells {
   margin-top: 5px;
+  position: relative;
 }
 
 .summoner-spells img {
@@ -32,6 +33,16 @@
 
 .summoner-spells :first-child {
   margin-right: 5px;
+}
+
+.spell-description-hover-text {
+  font-weight: 100;
+  position: absolute;
+  width: 300px;
+  background: #000;
+  border: 1px solid;
+  z-index: 99;
+  padding: 5px 10px;
 }
 
 .kda-container {

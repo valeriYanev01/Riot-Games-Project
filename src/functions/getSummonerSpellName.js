@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export const summonerSpellName = (id) => {
   let summonerSpell = "";
 
@@ -55,4 +57,16 @@ export const summonerSpellName = (id) => {
       break;
   }
   return summonerSpell;
+};
+
+let description = "";
+
+export const summonerSpellDescription = async (id) => {
+  await axios
+    .get("https://ddragon.leagueoflegends.com/cdn/14.4.1/data/en_US/summoner.json")
+    .then((response) => {
+      description = response.data.data[summonerSpellName(id)].description;
+    })
+    .finally();
+  return description;
 };

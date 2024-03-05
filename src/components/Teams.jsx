@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 import { summonerRole } from "../functions/getSummonerRole.js";
-import { summonerSpellName } from "../functions/getSummonerSpellName.js";
+import { summonerSpellName, summonerSpellDescription } from "../functions/getSummonerSpellName.js";
 import SingleItem from "./SingleItem";
 import "./Teams.css";
 import axios from "axios";
 import MostPlayedChamp from "./MostPlayedChamp.jsx";
+import Error from "./Error.jsx";
 
 const Teams = ({ summoner, region }) => {
   const [hoverTextKDA, setHoverTextKDA] = useState("");
   const [hoverTextCS, setHoverTextCS] = useState("");
+  const [hoverSummonerSpell_1, setHoverSummonerSpell_1] = useState("");
+  const [hoverSummonerSpell_2, setHoverSummonerSpell_2] = useState("");
   const [championInfo_1, setChampionInfo_1] = useState({});
   const [championInfo_2, setChampionInfo_2] = useState({});
   const [championInfo_3, setChampionInfo_3] = useState({});
@@ -28,6 +31,9 @@ const Teams = ({ summoner, region }) => {
           setChampionInfo_1(response.data[0]);
           setChampionInfo_2(response.data[1]);
           setChampionInfo_3(response.data[2]);
+        })
+        .catch((err) => {
+          <Error error={err} />;
         });
     };
 
@@ -35,8 +41,6 @@ const Teams = ({ summoner, region }) => {
   }, [region, summoner.puuid]);
 
   useEffect(() => {
-    let replaceString = "";
-
     const getAllChampions = () => {
       axios
         .get(`https://ddragon.leagueoflegends.com/cdn/14.4.1/data/en_US/champion.json`)
@@ -46,19 +50,13 @@ const Teams = ({ summoner, region }) => {
         .then((response) => {
           response.forEach((champion) => {
             if (champion.key == championInfo_1.championId) {
-              replaceString = champion.name.replace("'G", "g");
-              replaceString = replaceString.replace(/[\s'"]/g, "");
-              setChampionImage_1(replaceString);
+              setChampionImage_1(champion.image.full);
             }
             if (champion.key == championInfo_2.championId) {
-              replaceString = champion.name.replace("'G", "g");
-              replaceString = replaceString.replace(/[\s'"]/g, "");
-              setChampionImage_2(replaceString);
+              setChampionImage_2(champion.image.full);
             }
             if (champion.key == championInfo_3.championId) {
-              replaceString = champion.name.replace("'G", "g");
-              replaceString = replaceString.replace(/[\s'"]/g, "");
-              setChampionImage_3(replaceString);
+              setChampionImage_3(champion.image.full);
             }
           });
         });
@@ -80,17 +78,37 @@ const Teams = ({ summoner, region }) => {
           />
           <span className="summoner-spells">
             <img
+              onMouseEnter={() =>
+                summonerSpellDescription(summoner.summoner1Id).then((response) => setHoverSummonerSpell_1(response))
+              }
+              onMouseLeave={async () => setHoverSummonerSpell_1("")}
               className="spell1"
               src={`https://ddragon.leagueoflegends.com/cdn/14.4.1/img/spell/${summonerSpellName(
                 summoner.summoner1Id
               )}.png`}
             />
             <img
+              onMouseEnter={() =>
+                summonerSpellDescription(summoner.summoner2Id).then((response) => setHoverSummonerSpell_2(response))
+              }
+              onMouseLeave={() => setHoverSummonerSpell_2("")}
               className="spell2"
               src={`https://ddragon.leagueoflegends.com/cdn/14.4.1/img/spell/${summonerSpellName(
                 summoner.summoner2Id
               )}.png`}
             />
+            {hoverSummonerSpell_1 && (
+              <div
+                dangerouslySetInnerHTML={{ __html: [hoverSummonerSpell_1] }}
+                className="spell-description-hover-text"
+              />
+            )}
+            {hoverSummonerSpell_2 && (
+              <div
+                dangerouslySetInnerHTML={{ __html: [hoverSummonerSpell_2] }}
+                className="spell-description-hover-text"
+              />
+            )}
           </span>
         </span>
 
