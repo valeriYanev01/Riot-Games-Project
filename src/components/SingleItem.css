@@ -1,3 +1,7 @@
+.single_item {
+  margin-left: 3px;
+}
+
 .item-float-container {
   background: #000;
   border: 1px solid #f0e6d2;

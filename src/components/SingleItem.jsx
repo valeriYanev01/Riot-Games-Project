@@ -6,15 +6,15 @@ const SingleItem = ({ item }) => {
   const [itemDescription, setItemDescription] = useState("");
   const [itemName, setItemName] = useState("");
 
-  const handleItemHover = () => {
-    axios.get("https://ddragon.leagueoflegends.com/cdn/14.4.1/data/en_US/item.json").then((response) => {
+  const handleItemHover = async () => {
+    await axios.get("https://ddragon.leagueoflegends.com/cdn/14.4.1/data/en_US/item.json").then((response) => {
       setItemDescription(response.data.data[item].description);
       setItemName(response.data.data[item].name);
     });
   };
 
   return (
-    <>
+    <span className="single_item">
       {!item == "0" ? (
         <span>
           <img
@@ -41,7 +41,7 @@ const SingleItem = ({ item }) => {
           <div className="item-information" dangerouslySetInnerHTML={{ __html: [itemDescription] }} />
         </span>
       )}
-    </>
+    </span>
   );
 };
 

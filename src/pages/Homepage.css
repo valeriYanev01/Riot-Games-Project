@@ -7,6 +7,102 @@
   font-family: LoL Font;
   font-weight: 700;
   margin: 0;
+  color: #f0e6d2;
+  font-weight: 100;
+  box-sizing: border-box;
+}
+
+.homepage {
+  background-image: url("/public/img/bg.png");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+.main-text {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: fit-content;
+  margin: auto;
+  padding: 200px 0 100px 0;
+}
+
+.main-text img {
+  width: 64px;
+}
+
+.main-text span {
+  font-size: 48px;
+}
+
+.select-input-container {
+  display: flex;
+  gap: 50px;
+  margin: auto;
+  width: fit-content;
+}
+
+.select-region {
+  background: #010a13;
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: 0;
+}
+
+.search-input-name {
+  font-size: 22px;
+  background: #010a13;
+  border: none;
+  outline: 0;
+  padding: 5px 10px;
+  border-radius: 5px;
+  width: 300px;
+  text-align: center;
+}
+
+.search-button {
+  font-size: 24px;
+  background-color: #010a13;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin: auto;
+  margin-top: 50px;
+  display: flex;
+}
+
+.summoner-data {
+  width: fit-content;
+  margin: auto;
+  margin-top: 100px;
+}
+
+.summoner-data-general-info {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid;
+}
+
+.summoner-data img {
+  width: 96px;
+}
+
+.summoner-three-champs {
+  display: flex;
+  justify-content: center;
+}
+
+.summoner-three-champs div {
+  width: 200px;
+  text-align: center;
 }
 
 .matches-container {
@@ -50,4 +146,5 @@
   border-bottom: 1px solid #f0e6d2;
   padding-bottom: 15px;
   display: flex;
+  background: inherit;
 }

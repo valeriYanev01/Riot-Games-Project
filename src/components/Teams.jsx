@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { summonerRole } from "../functions/getSummonerRole.js";
-import { summonerSpellName, summonerSpellDescription } from "../functions/getSummonerSpellName.js";
+import { summonerSpellName, summonerSpellDescription } from "../functions/summonerSpells.js";
 import SingleItem from "./SingleItem";
 import "./Teams.css";
 import axios from "axios";
@@ -22,10 +22,11 @@ const Teams = ({ summoner, region }) => {
   const API_KEY = "RGAPI-e0aa0d51-b0ce-4370-8906-d062beedeb82";
 
   useEffect(() => {
-    const getActualSummonerData = () => {
-      axios
+    const getActualSummonerData = async () => {
+      await axios
         .get(
-          `https://${region}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/${summoner.puuid}/top?count=3&api_key=${API_KEY}`
+          `https://${region}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/${summoner.puuid}/top?count=3&api_key=${API_KEY}`,
+          { "Access-Control-Allow-Credentials": true }
         )
         .then((response) => {
           setChampionInfo_1(response.data[0]);
@@ -41,8 +42,8 @@ const Teams = ({ summoner, region }) => {
   }, [region, summoner.puuid]);
 
   useEffect(() => {
-    const getAllChampions = () => {
-      axios
+    const getAllChampions = async () => {
+      await axios
         .get(`https://ddragon.leagueoflegends.com/cdn/14.4.1/data/en_US/champion.json`)
         .then((response) => {
           return Object.values(response.data.data);
@@ -131,10 +132,10 @@ const Teams = ({ summoner, region }) => {
           >
             <img src="/img/cs.png" className="minions-icon" />
             <span>
-              {summoner.totalAllyJungleMinionsKilled +
-                summoner.totalEnemyJungleMinionsKilled +
-                summoner.totalMinionsKilled +
-                summoner.neutralMinionsKilled}
+              {(summoner.totalAllyJungleMinionsKilled ? summoner.totalAllyJungleMinionsKilled : 0) +
+                (summoner.totalEnemyJungleMinionsKilled ? summoner.totalEnemyJungleMinionsKilled : 0) +
+                (summoner.totalMinionsKilled ? summoner.totalMinionsKilled : 0) +
+                (summoner.neutralMinionsKilled ? summoner.neutralMinionsKilled : 0)}
             </span>
             {hoverTextCS && <div className="kda-hover-text">{hoverTextCS}</div>}
           </span>

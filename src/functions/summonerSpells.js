@@ -67,6 +67,8 @@ export const summonerSpellDescription = async (id) => {
     .then((response) => {
       description = response.data.data[summonerSpellName(id)].description;
     })
-    .finally();
+    .catch((err) => {
+      console.log(err);
+    });
   return description;
 };
