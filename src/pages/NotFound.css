@@ -9,6 +9,7 @@
 .amumu {
   height: 400px;
   align-self: center;
+  filter: brightness(1.5);
 }
 
 .not-found-text {

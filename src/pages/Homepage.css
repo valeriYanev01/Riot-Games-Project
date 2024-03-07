@@ -17,6 +17,7 @@
   background-repeat: no-repeat;
   background-attachment: fixed;
   min-height: 100vh;
+  filter: brightness(1.1);
 }
 .error {
   text-align: center;
