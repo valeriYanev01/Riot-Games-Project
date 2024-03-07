@@ -13,10 +13,15 @@
 }
 
 .homepage {
-  background-image: url("/public/img/bg.png");
+  background-image: url("/img/bg.jpg");
   background-repeat: no-repeat;
   background-attachment: fixed;
   min-height: 100vh;
+}
+.error {
+  text-align: center;
+  margin: 30px;
+  font-size: 22px;
 }
 
 .main-text {
@@ -39,8 +44,7 @@
 .select-input-container {
   display: flex;
   gap: 50px;
-  margin: auto;
-  width: fit-content;
+  justify-content: center;
 }
 
 .select-region {
@@ -63,16 +67,28 @@
   text-align: center;
 }
 
-.search-button {
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+}
+
+.search-button,
+.close-button {
   font-size: 24px;
   background-color: #010a13;
   border: none;
   cursor: pointer;
   padding: 5px 10px;
   border-radius: 5px;
-  margin: auto;
   margin-top: 50px;
   display: flex;
+  transition: color 0.3s;
+}
+
+.search-button:hover,
+.close-button:hover {
+  color: #c89b3c;
 }
 
 .summoner-data {
@@ -83,21 +99,88 @@
 
 .summoner-data-general-info {
   display: flex;
-  gap: 10px;
+  gap: 100px;
   margin-bottom: 30px;
   align-items: center;
   justify-content: center;
-  padding-bottom: 20px;
+  padding-bottom: 40px;
   border-bottom: 1px solid;
 }
 
-.summoner-data img {
+.summoner-data-general-info p {
+  font-size: 18px;
+}
+
+.summoner-icon-container {
+  position: relative;
+}
+
+.summoner-icon-border {
+  position: absolute;
+}
+
+.s {
+}
+
+.g {
+  width: 210px;
+  bottom: -25px;
+  right: -50px;
+}
+
+.p,
+.b,
+.i {
+  width: 200px;
+  bottom: -40px;
+  right: -50px;
+}
+
+.e {
+  width: 230px;
+  bottom: -40px;
+  right: -65px;
+}
+
+.d {
+  width: 230px;
+  bottom: -30px;
+  right: -65px;
+}
+
+.m {
+  width: 240px;
+  bottom: -35px;
+  right: -68px;
+}
+
+.gm {
+  width: 240px;
+  bottom: -28px;
+  right: -70px;
+}
+
+.c {
+  width: 235px;
+  bottom: -25px;
+  right: -68px;
+}
+
+.home-summoner-icon {
   width: 96px;
+  border-radius: 50%;
+}
+
+.summoner-three-champs-para {
+  font-size: 26px;
+  text-align: center;
+  margin-bottom: 30px;
 }
 
 .summoner-three-champs {
   display: flex;
   justify-content: center;
+  padding-bottom: 50px;
 }
 
 .summoner-three-champs div {
@@ -105,16 +188,32 @@
   text-align: center;
 }
 
+.match-history-para {
+  font-size: 26px;
+  text-align: center;
+  margin: 30px 0;
+}
+
 .matches-container {
   display: flex;
   flex-direction: column;
+}
+
+.match-stats-para-first {
+  text-decoration: underline;
+  margin-top: 10px;
+}
+
+.match-stats-para {
+  margin: 0 0 10px 150px;
+  font-size: 18px;
 }
 
 .match-number {
   font-size: 22px;
   cursor: pointer;
   display: inline-block;
-  margin: 10px 0 0 20px;
+  margin: 10px 0 0 100px;
 }
 
 .red-team,

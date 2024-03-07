@@ -5,7 +5,6 @@ import SingleItem from "./SingleItem";
 import "./Teams.css";
 import axios from "axios";
 import MostPlayedChamp from "./MostPlayedChamp.jsx";
-import Error from "./Error.jsx";
 
 const Teams = ({ summoner, region }) => {
   const [hoverTextKDA, setHoverTextKDA] = useState("");
@@ -22,11 +21,14 @@ const Teams = ({ summoner, region }) => {
   const API_KEY = "RGAPI-e0aa0d51-b0ce-4370-8906-d062beedeb82";
 
   useEffect(() => {
+    setChampionInfo_1({});
+    setChampionInfo_2({});
+    setChampionInfo_3({});
+
     const getActualSummonerData = async () => {
       await axios
         .get(
-          `https://${region}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/${summoner.puuid}/top?count=3&api_key=${API_KEY}`,
-          { "Access-Control-Allow-Credentials": true }
+          `https://${region}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/${summoner.puuid}/top?count=3&api_key=${API_KEY}`
         )
         .then((response) => {
           setChampionInfo_1(response.data[0]);
@@ -34,7 +36,7 @@ const Teams = ({ summoner, region }) => {
           setChampionInfo_3(response.data[2]);
         })
         .catch((err) => {
-          <Error error={err} />;
+          console.log(err);
         });
     };
 
@@ -42,35 +44,41 @@ const Teams = ({ summoner, region }) => {
   }, [region, summoner.puuid]);
 
   useEffect(() => {
+    setChampionImage_1("");
+    setChampionImage_2("");
+    setChampionImage_3("");
+
     const getAllChampions = async () => {
-      await axios
-        .get(`https://ddragon.leagueoflegends.com/cdn/14.4.1/data/en_US/champion.json`)
-        .then((response) => {
-          return Object.values(response.data.data);
-        })
-        .then((response) => {
-          response.forEach((champion) => {
-            if (champion.key == championInfo_1.championId) {
-              setChampionImage_1(champion.image.full);
-            }
-            if (champion.key == championInfo_2.championId) {
-              setChampionImage_2(champion.image.full);
-            }
-            if (champion.key == championInfo_3.championId) {
-              setChampionImage_3(champion.image.full);
-            }
+      if (championInfo_1 && championInfo_2 && championInfo_3) {
+        await axios
+          .get("https://ddragon.leagueoflegends.com/cdn/14.4.1/data/en_US/champion.json")
+          .then((response) => {
+            return Object.values(response.data.data);
+          })
+          .then((response) => {
+            response.forEach((champion) => {
+              if (champion.key == championInfo_1.championId) {
+                setChampionImage_1(champion.image.full);
+              }
+              if (champion.key == championInfo_2.championId) {
+                setChampionImage_2(champion.image.full);
+              }
+              if (champion.key == championInfo_3.championId) {
+                setChampionImage_3(champion.image.full);
+              }
+            });
           });
-        });
+      }
     };
 
     getAllChampions();
-  }, [championInfo_1.championId, championInfo_2.championId, championInfo_3.championId]);
+  }, [championInfo_1, championInfo_2, championInfo_3]);
 
   return (
     <>
       <div className="match-overview">
         <span className="summoner-name">
-          {summonerRole(summoner.teamPosition)} - {summoner.championName}
+          {summonerRole(summoner.teamPosition)} {summoner.championName}
         </span>
         <span className="champion-img-spells">
           <img
@@ -180,9 +188,15 @@ const Teams = ({ summoner, region }) => {
         </div>
 
         <div className="most-played-champs">
-          <MostPlayedChamp championInfo={championInfo_1} championImage={championImage_1} />
-          <MostPlayedChamp championInfo={championInfo_2} championImage={championImage_2} />
-          <MostPlayedChamp championInfo={championInfo_3} championImage={championImage_3} />
+          {championInfo_1 && championInfo_2 && championImage_3 ? (
+            <>
+              <MostPlayedChamp championInfo={championInfo_1} championImage={championImage_1} />
+              <MostPlayedChamp championInfo={championInfo_2} championImage={championImage_2} />
+              <MostPlayedChamp championInfo={championInfo_3} championImage={championImage_3} />
+            </>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </>

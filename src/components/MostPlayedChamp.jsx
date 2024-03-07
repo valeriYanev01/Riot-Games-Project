@@ -3,7 +3,7 @@ import "./MostPlayedChamp.css";
 const MostPlayedChamp = ({ championInfo, championImage }) => {
   return (
     <div className="most-played-champ-container">
-      <div className="champion-border">
+      <div className="champion-icon-container">
         <img
           src={`https://ddragon.leagueoflegends.com/cdn/14.4.1/img/champion/${championImage}`}
           className="most-played-champion-icon"

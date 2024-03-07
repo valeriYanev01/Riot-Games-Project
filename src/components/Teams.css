@@ -18,7 +18,7 @@
 }
 
 .champion-icon {
-  width: 80px;
+  width: 64px;
 }
 
 .summoner-spells {
@@ -150,12 +150,6 @@
 
 .most-played-champs div div {
   font-weight: 100;
-}
-
-.most-played-champion-icon {
-  width: 64px;
-  border: 3px solid;
-  border-radius: 50%;
 }
 
 .mastery-points {

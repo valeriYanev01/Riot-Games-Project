@@ -1,0 +1,23 @@
+.not-found-page {
+  background: #010a13;
+  min-height: 100svh;
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+}
+
+.amumu {
+  height: 400px;
+  align-self: center;
+}
+
+.not-found-text {
+  align-self: center;
+  font-size: 26px;
+}
+
+.not-found-text a {
+  color: #c89b3c;
+  text-decoration: none;
+  font-size: 26px;
+}

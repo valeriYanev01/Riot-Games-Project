@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import "./Homepage.css";
 import Loading from "../components/Loading";
 import Teams from "../components/Teams";
+import MostPlayedChamp from "../components/MostPlayedChamp";
 
 const Homepage = () => {
   const [continent, setContinent] = useState("");
@@ -17,10 +18,40 @@ const Homepage = () => {
   const [userData, setUserData] = useState({});
   const [profileIcon, setProfileIcon] = useState("");
   const [region, setRegion] = useState("");
+  const [rank, setRank] = useState("");
   const [summonerName, setSummonerName] = useState("");
+  const [championInfo_1, setChampionInfo_1] = useState({});
+  const [championInfo_2, setChampionInfo_2] = useState({});
+  const [championInfo_3, setChampionInfo_3] = useState({});
+  const [championImage_1, setChampionImage_1] = useState("");
+  const [championImage_2, setChampionImage_2] = useState("");
+  const [championImage_3, setChampionImage_3] = useState("");
 
   const API_KEY = "RGAPI-e0aa0d51-b0ce-4370-8906-d062beedeb82";
 
+  const resetData = () => {
+    setContinent("");
+    setLevel("");
+    setLoadingMatchHistory(false);
+    setLoadingUser(false);
+    setMapName(false);
+    setMatches([]);
+    setName("");
+    setMatchIndex(null);
+    setUserData({});
+    setProfileIcon("");
+    setRegion("");
+    setRank("");
+    setSummonerName("");
+    setChampionInfo_1({});
+    setChampionInfo_2({});
+    setChampionInfo_3({});
+    setChampionImage_1("");
+    setChampionImage_2("");
+    setChampionImage_3("");
+  };
+
+  // setRegion
   useEffect(() => {
     switch (region) {
       case "br1":
@@ -53,6 +84,60 @@ const Homepage = () => {
     }
   }, [region]);
 
+  //setChampionInfo
+  useEffect(() => {
+    const getActualSummonerData = async () => {
+      if (userData.puuid) {
+        await axios
+          .get(
+            `https://${region}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/${userData.puuid}/top?count=3&api_key=${API_KEY}`,
+            { "Access-Control-Allow-Credentials": true }
+          )
+          .then((response) => {
+            setChampionInfo_1(response.data[0]);
+            setChampionInfo_2(response.data[1]);
+            setChampionInfo_3(response.data[2]);
+          })
+          .catch((err) => {
+            resetData(err);
+          });
+      }
+    };
+    getActualSummonerData();
+  }, [region, userData.puuid]);
+
+  //setChampionImage
+  useEffect(() => {
+    const getAllChampions = async () => {
+      if (championInfo_1 && championInfo_2 && championInfo_3) {
+        await axios
+          .get(`https://ddragon.leagueoflegends.com/cdn/14.4.1/data/en_US/champion.json`)
+          .then((response) => {
+            return Object.values(response.data.data);
+          })
+          .then((response) => {
+            response.forEach((champion) => {
+              if (champion.key == championInfo_1.championId) {
+                setChampionImage_1(champion.image.full);
+              }
+              if (champion.key == championInfo_2.championId) {
+                setChampionImage_2(champion.image.full);
+              }
+              if (champion.key == championInfo_3.championId) {
+                setChampionImage_3(champion.image.full);
+              }
+            });
+          })
+          .catch((err) => {
+            resetData(err);
+          });
+      }
+    };
+
+    getAllChampions();
+  }, [championInfo_1, championInfo_2, championInfo_3]);
+
+  //matchHistory
   const getMatchHistory = async (puuid, region) => {
     setLoadingMatchHistory(true);
     await axios
@@ -66,7 +151,10 @@ const Homepage = () => {
             .get(`https://${region}.api.riotgames.com/lol/match/v5/matches/${match}?api_key=${API_KEY}`, {
               "Access-Control-Allow-Credentials": true,
             })
-            .then((matchResponse) => matchResponse.data.info);
+            .then((matchResponse) => matchResponse.data.info)
+            .catch((err) => {
+              console.log(err);
+            });
         });
 
         return Promise.all(matchPromises);
@@ -75,21 +163,30 @@ const Homepage = () => {
         setMatches(response);
         setLoadingMatchHistory(false);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        setError("Too many requests, cannot fetch match history! Try again in a minute!");
+        setLoadingMatchHistory(false);
+        console.log(err);
+      });
   };
 
+  //fetchUserData
   const getUser = async () => {
     setLoadingUser(true);
     setMatches([]);
     setUserData({});
+    setRank("");
+    setMatchIndex(null);
 
     if (!region) {
       setError("Please select a region");
+      resetData();
       throw new Error("Please select a region");
     }
 
     if (!summonerName) {
       setError("Empty summoner name!");
+      resetData();
       throw new Error("Empty summoner name!");
     }
 
@@ -102,26 +199,54 @@ const Homepage = () => {
         setName(response.data.name);
         setProfileIcon(response.data.profileIconId);
         setLevel(response.data.summonerLevel);
-
         setError("");
         setSummonerName("");
 
-        return response.data.puuid;
+        return response.data;
+      })
+      .catch((err) => {
+        setError("Too many requests! Try again in a minute!");
+        resetData(err);
       })
       .then((response) => {
-        getMatchHistory(response, continent);
+        getMatchHistory(response.puuid, continent);
+        return response;
       })
-      .then(() => setLoadingUser(false))
+      .catch((err) => resetData(err))
+      .then((response) => {
+        setLoadingUser(false);
+        return response;
+      })
+      .catch((err) => resetData(err))
+      .then(async (response) => {
+        await axios
+          .get(
+            `https://${region}.api.riotgames.com/lol/league/v4/entries/by-summoner/${response.id}?api_key=${API_KEY}`,
+            {
+              "Access-Control-Allow-Credentials": true,
+            }
+          )
+          .then((response) => {
+            if (response.data.length > 0) {
+              if (response.data[0].queueType == "RANKED_SOLO_5x5") {
+                setRank(response.data[0].tier);
+              }
+              if (response.data[1].queueType == "RANKED_SOLO_5x5") {
+                setRank(response.data[1].tier);
+              }
+            }
+          })
+          .catch((err) => resetData(err));
+      })
       .catch((err) => {
+        resetData(err);
         setError("There is no summoner with that name!");
-        setSummonerName("");
-        setUserData({});
-        console.error(err);
       });
   };
 
+  //Match Logic
   const handleShowMatch = async (index) => {
-    setMatchIndex(index === matchIndex ? null : index);
+    setMatchIndex(index == matchIndex ? null : index);
 
     await axios
       .get(`https://static.developer.riotgames.com/docs/lol/maps.json`)
@@ -148,6 +273,7 @@ const Homepage = () => {
               setRegion(e.target.value);
             }}
             value={region}
+            id="select-region"
           >
             <option>Select Region</option>
             <option value="br1">Brazil</option>
@@ -171,6 +297,7 @@ const Homepage = () => {
           <div>
             <input
               className="search-input-name"
+              id="search-input-name"
               placeholder="Summoner Name..."
               value={summonerName}
               onChange={(e) => setSummonerName(e.target.value)}
@@ -178,27 +305,69 @@ const Homepage = () => {
           </div>
         </div>
 
-        <button className="search-button" onClick={getUser}>
-          Search Summoner
-        </button>
+        <div className="button-container">
+          <button className="search-button" onClick={getUser}>
+            Search Summoner
+          </button>
+          <button className="close-button" onClick={resetData}>
+            Close Summoner
+          </button>
+        </div>
 
-        {error && <p>{error}</p>}
+        {error && <p className="error">{error}</p>}
 
         {loadingUser && <Loading toLoad={"user"} />}
         {userData.name ? (
           <div className="summoner-data">
             <div className="summoner-data-general-info">
-              <img src={`https://ddragon.leagueoflegends.com/cdn/14.4.1/img/profileicon/${profileIcon}.png`} />
+              <div className="summoner-icon-container">
+                <div>
+                  {rank == "IRON" ? (
+                    <img src="/img/iron.png" className="summoner-icon-border i" />
+                  ) : rank == "BRONZE" ? (
+                    <img src="/img/bronze.png" className="summoner-icon-border b" />
+                  ) : rank == "SILVER" ? (
+                    <img src="/img/silver.png" className="summoner-icon-border s" />
+                  ) : rank == "GOLD" ? (
+                    <img src="/img/gold.png" className="summoner-icon-border g" />
+                  ) : rank == "PLATINUM" ? (
+                    <img src="/img/platinum.png" className="summoner-icon-border p" />
+                  ) : rank == "EMERALD" ? (
+                    <img src="/img/emerald.png" className="summoner-icon-border e" />
+                  ) : rank == "DIAMOND" ? (
+                    <img src="/img/diamond.png" className="summoner-icon-border d" />
+                  ) : rank == "MASTER" ? (
+                    <img src="/img/master.png" className="summoner-icon-border m" />
+                  ) : rank == "GRANDMASTER" ? (
+                    <img src="/img/grandmaster.png" className="summoner-icon-border gm" />
+                  ) : rank == "CHALLENGER" ? (
+                    <img src="/img/challenger.png" className="summoner-icon-border c" />
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <img
+                  src={`https://ddragon.leagueoflegends.com/cdn/14.4.1/img/profileicon/${profileIcon}.png`}
+                  className="home-summoner-icon"
+                />
+              </div>
               <div>
                 <p>Summoner: {name}</p>
                 <p>Level: {level}</p>
               </div>
             </div>
 
+            <p className="summoner-three-champs-para">Most Played Champs</p>
             <div className="summoner-three-champs">
-              <div>1</div>
-              <div>2</div>
-              <div>3</div>
+              {championInfo_1 && championInfo_2 && championImage_3 ? (
+                <>
+                  <MostPlayedChamp championInfo={championInfo_1} championImage={championImage_1} />
+                  <MostPlayedChamp championInfo={championInfo_2} championImage={championImage_2} />
+                  <MostPlayedChamp championInfo={championInfo_3} championImage={championImage_3} />
+                </>
+              ) : (
+                ""
+              )}
             </div>
           </div>
         ) : (
@@ -208,9 +377,10 @@ const Homepage = () => {
 
       <div>
         {loadingMatchHistory && <Loading toLoad={"match history"} />}
+        {matches.length > 0 && <p className="match-history-para">Match History</p>}
         {matches.length > 0 &&
           matches.map((match, i) => (
-            <div key={i}>
+            <div key={i} className="single-match">
               <span
                 onClick={() => {
                   handleShowMatch(i);
@@ -220,18 +390,20 @@ const Homepage = () => {
               {matchIndex === i && (
                 <div>
                   <div className="matches-container">
-                    <p>Winner: {match.teams[0].win ? "Blue Team" : "Red Team"}</p>
-                    <p>Date: {new Date(match.gameCreation).toISOString()}</p>
-                    <p>Duration: {(match.gameDuration / 60).toFixed(2)} m</p>
-                    <p>
+                    <p className="match-stats-para match-stats-para-first">
+                      Winner: {match.teams[0].win ? "Blue Team" : "Red Team"}
+                    </p>
+                    <p className="match-stats-para">
+                      Date: {new Date(match.gameCreation).toLocaleDateString("en-EU", { timeZone: "UTC" })}
+                    </p>
+                    <p className="match-stats-para">Duration: {(match.gameDuration / 60).toFixed(2)} m</p>
+                    <p className="match-stats-para">
                       Mode:{" "}
                       {match.gameMode === "CLASSIC"
                         ? match.gameMode[0] + match.gameMode.slice(1).toLowerCase()
                         : match.gameMode}
                     </p>
-                    <div>
-                      <span>Map: {mapName}</span>
-                    </div>
+                    <p className="match-stats-para">Map: {mapName}</p>
 
                     <div className="blue-team">
                       {match.participants
