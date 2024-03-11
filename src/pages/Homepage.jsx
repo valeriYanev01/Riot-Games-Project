@@ -27,10 +27,7 @@ const Homepage = () => {
   const [championImage_2, setChampionImage_2] = useState("");
   const [championImage_3, setChampionImage_3] = useState("");
 
-  const API_KEY = import.meta.env.VITE_API_KEY;
-
-  const controller = new AbortController();
-  const signal = controller.signal;
+  const API_KEY = "RGAPI-64335f79-7554-4bf0-a66a-4fef126aaf33";
 
   const resetData = () => {
     setContinent("");
@@ -151,13 +148,12 @@ const Homepage = () => {
       .then((response) => {
         const matchPromises = response.data.map(async (match) => {
           return axios
-            .get(`https://${region}.api.riotgames.com/lol/match/v5/matches/${match}?api_key=${API_KEY}`, { signal })
+            .get(`https://${region}.api.riotgames.com/lol/match/v5/matches/${match}?api_key=${API_KEY}`)
             .then((matchResponse) => {
               return matchResponse.data.info;
             })
             .catch((err) => {
               if (err.message == "Network Error") {
-                controller.abort();
                 console.log("No data for that match!");
               }
             });

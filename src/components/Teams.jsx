@@ -18,7 +18,7 @@ const Teams = ({ summoner, region }) => {
   const [championImage_2, setChampionImage_2] = useState("");
   const [championImage_3, setChampionImage_3] = useState("");
 
-  const API_KEY = import.meta.env.VITE_API_KEY;
+  const API_KEY = "RGAPI-64335f79-7554-4bf0-a66a-4fef126aaf33";
 
   useEffect(() => {
     const getActualSummonerData = async () => {
