@@ -18,14 +18,14 @@ const Teams = ({ summoner, region }) => {
   const [championImage_2, setChampionImage_2] = useState("");
   const [championImage_3, setChampionImage_3] = useState("");
 
-  const API_KEY = "RGAPI-e0aa0d51-b0ce-4370-8906-d062beedeb82";
+  const API_KEY = import.meta.env.VITE_API_KEY;
 
   useEffect(() => {
-    setChampionInfo_1({});
-    setChampionInfo_2({});
-    setChampionInfo_3({});
-
     const getActualSummonerData = async () => {
+      setChampionInfo_1({});
+      setChampionInfo_2({});
+      setChampionInfo_3({});
+
       await axios
         .get(
           `https://${region}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/${summoner.puuid}/top?count=3&api_key=${API_KEY}`
@@ -188,15 +188,13 @@ const Teams = ({ summoner, region }) => {
         </div>
 
         <div className="most-played-champs">
-          {championInfo_1 && championInfo_2 && championImage_3 ? (
+          {
             <>
               <MostPlayedChamp championInfo={championInfo_1} championImage={championImage_1} />
               <MostPlayedChamp championInfo={championInfo_2} championImage={championImage_2} />
               <MostPlayedChamp championInfo={championInfo_3} championImage={championImage_3} />
             </>
-          ) : (
-            ""
-          )}
+          }
         </div>
       </div>
     </>

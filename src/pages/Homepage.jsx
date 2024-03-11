@@ -27,7 +27,10 @@ const Homepage = () => {
   const [championImage_2, setChampionImage_2] = useState("");
   const [championImage_3, setChampionImage_3] = useState("");
 
-  const API_KEY = "RGAPI-e0aa0d51-b0ce-4370-8906-d062beedeb82";
+  const API_KEY = import.meta.env.VITE_API_KEY;
+
+  const controller = new AbortController();
+  const signal = controller.signal;
 
   const resetData = () => {
     setContinent("");
@@ -138,25 +141,27 @@ const Homepage = () => {
   }, [championInfo_1, championInfo_2, championInfo_3]);
 
   //matchHistory
+
   const getMatchHistory = async (puuid, region) => {
     setLoadingMatchHistory(true);
     await axios
       .get(
-        `https://${region}.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?start=0&count=10&api_key=${API_KEY}`,
-        { "Access-Control-Allow-Credentials": true }
+        `https://${region}.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?start=0&count=10&api_key=${API_KEY}`
       )
       .then((response) => {
         const matchPromises = response.data.map(async (match) => {
-          return await axios
-            .get(`https://${region}.api.riotgames.com/lol/match/v5/matches/${match}?api_key=${API_KEY}`, {
-              "Access-Control-Allow-Credentials": true,
+          return axios
+            .get(`https://${region}.api.riotgames.com/lol/match/v5/matches/${match}?api_key=${API_KEY}`, { signal })
+            .then((matchResponse) => {
+              return matchResponse.data.info;
             })
-            .then((matchResponse) => matchResponse.data.info)
             .catch((err) => {
-              console.log(err);
+              if (err.message == "Network Error") {
+                controller.abort();
+                console.log("No data for that match!");
+              }
             });
         });
-
         return Promise.all(matchPromises);
       })
       .then((response) => {
@@ -164,9 +169,8 @@ const Homepage = () => {
         setLoadingMatchHistory(false);
       })
       .catch((err) => {
-        setError("Too many requests, cannot fetch match history! Try again in a minute!");
+        console.log(err.message);
         setLoadingMatchHistory(false);
-        console.log(err);
       });
   };
 
@@ -191,9 +195,7 @@ const Homepage = () => {
     }
 
     await axios
-      .get(`https://${region}.api.riotgames.com/lol/summoner/v4/summoners/by-name/${summonerName}?api_key=${API_KEY}`, {
-        "Access-Control-Allow-Credentials": true,
-      })
+      .get(`https://${region}.api.riotgames.com/lol/summoner/v4/summoners/by-name/${summonerName}?api_key=${API_KEY}`)
       .then((response) => {
         setUserData(response.data);
         setName(response.data.name);
@@ -209,7 +211,12 @@ const Homepage = () => {
         resetData(err);
       })
       .then((response) => {
-        getMatchHistory(response.puuid, continent);
+        try {
+          getMatchHistory(response.puuid, continent);
+        } catch (error) {
+          console.log(error);
+        }
+
         return response;
       })
       .catch((err) => resetData(err))
@@ -257,7 +264,9 @@ const Homepage = () => {
           }
         });
       })
-      .catch((err) => console.log(err));
+      .catch(() => {
+        console.log("No data for that match!");
+      });
   };
 
   return (
@@ -270,6 +279,7 @@ const Homepage = () => {
           <select
             className="select-region"
             onChange={(e) => {
+              setMatchIndex(null);
               setRegion(e.target.value);
             }}
             value={region}
@@ -375,7 +385,7 @@ const Homepage = () => {
         )}
       </div>
 
-      <div>
+      <div className="match-history-container">
         {loadingMatchHistory && <Loading toLoad={"match history"} />}
         {matches.length > 0 && <p className="match-history-para">Match History</p>}
         {matches.length > 0 &&
@@ -387,7 +397,7 @@ const Homepage = () => {
                 }}
                 className="match-number"
               >{`#${i + 1} Match`}</span>
-              {matchIndex === i && (
+              {match && matchIndex == i ? (
                 <div>
                   <div className="matches-container">
                     <p className="match-stats-para match-stats-para-first">
@@ -425,9 +435,14 @@ const Homepage = () => {
                     </div>
                   </div>
                 </div>
+              ) : !match ? (
+                <span className="match-error">No data for that match!</span>
+              ) : (
+                ""
               )}
             </div>
           ))}
+        <span>{!matches && "No match history for that summoner!"}</span>
       </div>
     </div>
   );

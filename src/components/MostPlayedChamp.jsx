@@ -10,7 +10,7 @@ const MostPlayedChamp = ({ championInfo, championImage }) => {
         />
       </div>
       <div className="most-played-single-champ">
-        {championInfo.championLevel == 1 ? (
+        {championInfo && championInfo.championLevel == 1 ? (
           <img className="mastery-points" src="/img/mastery_level_1.png" />
         ) : championInfo.championLevel == 2 ? (
           <img className="mastery-points" src="/img/mastery_level_2.png" />

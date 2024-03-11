@@ -121,6 +121,9 @@
 }
 
 .s {
+  width: 200px;
+  bottom: -45px;
+  right: -50px;
 }
 
 .g {
@@ -189,6 +192,10 @@
   text-align: center;
 }
 
+.match-history-container {
+  padding-bottom: 50px;
+}
+
 .match-history-para {
   font-size: 26px;
   text-align: center;
@@ -247,4 +254,9 @@
   padding-bottom: 15px;
   display: flex;
   background: inherit;
+}
+
+.match-error {
+  margin-left: 40px;
+  text-align: center;
 }
